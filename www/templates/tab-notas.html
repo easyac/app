@@ -1,0 +1,22 @@
+<ion-view view-title="Notas">
+  <ion-content class="padding">
+
+    <div class="list">
+
+      <div ng-repeat="(key, model) in faltas">
+
+        <div class="item item-divider">
+          {{key}}
+        </div>
+
+        <a class="item" href="#/disciplina/1" ng-repeat="m in model">
+          {{m.disciplina}}
+          <span style="float:right">
+            {{m.conceito}}
+          </span>
+        </a>
+      </div>
+    </div>
+
+  </ion-content>
+</ion-view>
