@@ -1,23 +1,37 @@
-<ion-view view-title="Faltas">
-  <ion-content class="padding">
-    <div class="list">
 
-      <div ng-repeat="(key, model) in faltas">
+
+<ion-view view-title="Disciplinas">
+  <ion-content class="padding">
+
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Filtrar Disciplinas
+      </div>
+
+      <select name="ngvalueselect" ng-model="filter">
+        <option ng-repeat="option in periodos" ng-value="option">{{::option}}</option>
+      </select>
+
+    </label>
+
+    <div class="list">
+      <div class="card" ng-repeat="(key, model) in faltas | filter:filter">
 
         <div class="item item-divider">
-          {{key}}
+          {{model.descricaoDisciplina}}
 
-          <span style="float:right">
-            faltas
-          </span>
+          <a href="#/" style="float:right">
+            <i class="icon ion-chevron-right icon-accessory"></i>
+          </a>
         </div>
 
-        <a class="item" ng-href="#/tab/disciplinas/1" ng-repeat="m in model">
-          {{m.disciplina}}
-          <span style="float:right">
-            {{m.faltas}}
-          </span>
-        </a>
+        <span class="item">
+          Faltas: {{model.faltas.total}}
+        </span>
+        <span class="item">
+          Conceito: {{model.notas.conceito}}
+        </span>
+
       </div>
 
     </div>

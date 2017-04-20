@@ -2,19 +2,14 @@
 angular.module('starter.controllers', [])
 .controller('FaltasCtrl', function($scope, Chats) {
   var all = Chats.all();
-  var model = {};
+  $scope.faltas = all;
 
-  all.forEach(function(f){
-    var key = f.ano + '/' + f.semestre;
+  $scope.periodos = all
+    .map(d => d.periodo)
+    .filter((value, index, self) => self.indexOf(value) === index)
+    .sort();
 
-    if(!model[key]){
-      model[key] = [];
-    }
-
-    model[key].push(f);
-  });
-
-  $scope.faltas = model;
+  $scope.filter = $scope.periodos[$scope.periodos.length - 1];
 })
 
 .controller('NotasCtrl', function($scope, Notas) {
