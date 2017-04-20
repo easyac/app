@@ -1,14 +1,29 @@
 <ion-view view-title="Configurações">
   <ion-content>
     <ion-list>
+
+
+      <div class="item item-divider">
+        Credenciais
+      </div>
+
+      <div class="item">
+        Associar Login Portal do Aluno
+
+        <a href="#/" style="float:right" class="energized">
+          <i class="icon ion-chevron-right icon-accessory"></i>
+        </a>
+      </div>
+
+      <div class="item item-divider">
+        Notificações
+      </div>
+
       <ion-toggle  ng-model="settings.enableFriends">
-          Buscar Notas
+          Alteração de Notas
       </ion-toggle>
       <ion-toggle  ng-model="settings.enableFaltas">
-          Buscar Faltas
-      </ion-toggle>
-      <ion-toggle  ng-model="settings.enableNotifications">
-          Habilitar Notificações
+          Alteração de Faltas
       </ion-toggle>
     </ion-list>
   </ion-content>
