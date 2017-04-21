@@ -1,0 +1,44 @@
+<ion-view title="Easyac">
+  <ion-content padding="true">
+    <form name="formLogin" class="form_login">
+      <br>
+      <ion-list>
+        <label class="item item-input item-stacked-label {{isFilled(formLogin.email.$valid)}}">
+          <span class="input-label">E-mail</span>
+          <input autocomplete="off" type="email" placeholder="fulano@gmail.com" name="email" ng-model="data.email" required>
+        </label>
+        <label class="item item-input item-stacked-label {{isFilled(formLogin.password.$valid)}}">
+          <span class="input-label">Senha</span>
+          <div ng-hide='showPassword'>
+            <input
+              autocomplete="off"
+              type="password"
+              name="password"
+              placeholder="******"
+              ng-model="data.password"
+              required>
+          </div>
+        </label>
+      </ion-list>
+
+      <br>
+
+      <button
+      ng-hide="formLogin.password.$valid === true && formLogin.email.$valid == true"
+      class="button button-energized button-block disabled" ng-click="login(data)">ENTRAR</button>
+
+      <button
+      ng-show="formLogin.password.$valid === true && formLogin.email.$valid == true"
+      class="button button-energized button-block" ng-click="login(data)">ENTRAR</button>
+
+
+      <p class="or-line">
+        <span class="or-text">OU</span>
+      </p>
+
+      <p class="text-center">
+        <a href="#/cadastre-se" class="energized">CADASTRE-SE</a>
+      </p>
+    </form>
+  </ion-content>
+</ion-view>

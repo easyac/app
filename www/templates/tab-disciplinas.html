@@ -1,29 +1,39 @@
-<!--
-  This template loads for the 'tab.friend-detail' state (app.js)
-  'friend' is a $scope variable created in the FriendsCtrl controller (controllers.js)
-  The FriendsCtrl pulls data from the Friends service (service.js)
-  The Friends service returns an array of friend data
--->
-<ion-view view-title="{{chat.disciplina}} ({{chat.ano}}/{{chat.semestre}})">
+
+
+<ion-view view-title="Disciplinas">
   <ion-content class="padding">
 
-    <!-- <pre>{{chat | json}}</pre> -->
-    <h2>
-      Conceito:
-      {{chat.conceito}}
-    </h2>
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Filtrar Disciplinas
+      </div>
 
-    <div class="item item-divider">
-      Trabalhos Parciais
-    </div>
-    <div ng-repeat="(key, model) in chat.parciais">
-      <div class="item">
-        {{model.descricao}}
-        <span style="float:right">
-          {{model.valorAvaliacaoParcial}}
+      <select name="ngvalueselect" ng-model="filter">
+        <option ng-repeat="option in periodos" ng-value="option">{{::option}}</option>
+      </select>
+
+    </label>
+
+    <div class="list">
+      <div class="card" ng-repeat="(key, model) in faltas | filter:filter">
+
+        <div class="item item-divider">
+          {{model.descricaoDisciplina}}
+
+          <a href="#/" style="float:right" class="energized">
+            <i class="icon ion-chevron-right icon-accessory"></i>
+          </a>
+        </div>
+
+        <span class="item">
+          Faltas: {{model.faltas.total}}
         </span>
-      </div
-    </div>
+        <span class="item">
+          Conceito: {{model.notas.conceito}}
+        </span>
 
+      </div>
+
+    </div>
   </ion-content>
 </ion-view>
