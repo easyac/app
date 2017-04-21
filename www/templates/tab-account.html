@@ -1,15 +1,36 @@
 <ion-view view-title="Configurações">
   <ion-content>
     <ion-list>
-      <ion-toggle  ng-model="settings.enableFriends">
-          Buscar Notas
+
+      <!-- CREDENCIAIS  -->
+      <div class="item item-divider">
+        Credenciais
+      </div>
+      <a class="item item-icon-right" href="#/tab/account/senac">
+        Associar Login Portal do Aluno
+        <i class="icon ion-chevron-right icon-accessory energized"></i>
+      </a>
+      <!-- / CREDENCIAIS  -->
+
+      <!-- NOTIFICAÇÕES  -->
+      <div class="item item-divider">
+        Notificações
+      </div>
+      <ion-toggle ng-model="settings.enableFriends">
+        Alteração de Notas
       </ion-toggle>
-      <ion-toggle  ng-model="settings.enableFaltas">
-          Buscar Faltas
+      <ion-toggle ng-model="settings.enableFaltas">
+        Alteração de Faltas
       </ion-toggle>
-      <ion-toggle  ng-model="settings.enableNotifications">
-          Habilitar Notificações
-      </ion-toggle>
+      <!-- / NOTIFICAÇÕES  -->
+
+      <!-- OUTRO  -->
+      <div class="item item-divider"></div>
+      <a class="item" ng-click="logout()">
+        Sair
+      </a>
+      <!-- / OUTRO  -->
+
     </ion-list>
   </ion-content>
 </ion-view>
