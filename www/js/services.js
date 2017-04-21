@@ -95,6 +95,7 @@ angular.module('starter.services', [])
       login: login,
       create: create,
       loadUserCredentials : loadUserCredentials,
+      destroyUserCredentials: destroyUserCredentials,
       logout: logout,
       isAuthorized: isAuthorized,
       isAuthenticated: function() {return isAuthenticated;},

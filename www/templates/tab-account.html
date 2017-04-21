@@ -2,35 +2,34 @@
   <ion-content>
     <ion-list>
 
-
+      <!-- CREDENCIAIS  -->
       <div class="item item-divider">
         Credenciais
       </div>
-
-      <div class="item">
+      <a class="item item-icon-right" href="#/tab/account/senac">
         Associar Login Portal do Aluno
+        <i class="icon ion-chevron-right icon-accessory energized"></i>
+      </a>
+      <!-- / CREDENCIAIS  -->
 
-        <a href="#/" style="float:right" class="energized">
-          <i class="icon ion-chevron-right icon-accessory"></i>
-        </a>
-      </div>
-
+      <!-- NOTIFICAÇÕES  -->
       <div class="item item-divider">
         Notificações
       </div>
-
-      <ion-toggle  ng-model="settings.enableFriends">
-          Alteração de Notas
+      <ion-toggle ng-model="settings.enableFriends">
+        Alteração de Notas
       </ion-toggle>
-      <ion-toggle  ng-model="settings.enableFaltas">
-          Alteração de Faltas
+      <ion-toggle ng-model="settings.enableFaltas">
+        Alteração de Faltas
       </ion-toggle>
+      <!-- / NOTIFICAÇÕES  -->
 
-      <div class="item item-divider">
-      </div>
-
-      <div class="item">Sair</div>
-
+      <!-- OUTRO  -->
+      <div class="item item-divider"></div>
+      <a class="item" ng-click="logout()">
+        Sair
+      </a>
+      <!-- / OUTRO  -->
 
     </ion-list>
   </ion-content>

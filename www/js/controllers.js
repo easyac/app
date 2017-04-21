@@ -22,7 +22,7 @@ angular.module('starter.controllers', [])
     });
   })
 
-  .controller('LoginCtrl',
+.controller('LoginCtrl',
     function($scope, $state, $location, AuthService, $ionicPopup, $ionicLoading){
       $scope.data = {
         username : '',
@@ -132,6 +132,35 @@ angular.module('starter.controllers', [])
     };
   })
 
+.controller('CadastroCtrl',
+  function($scope, $state, $location, AuthService, $ionicPopup, $ionicLoading){
+    $scope.data = {
+      email : '',
+      password : ''
+    };
+
+    $scope.isFilled = function(valid){
+      return valid === true ? 'valid' : '';
+    };
+
+    $scope.create = function(data) {
+      $ionicLoading.show({template: 'Carregando'});
+
+      AuthService.create(data)
+      .then(function() {
+        $ionicLoading.hide();
+        $state.go('login', {}, {reload: true});
+      }, function() {
+        $ionicLoading.hide();
+        $ionicPopup.alert({
+          title: 'Falha!',
+          template: 'Desculpe, houve um problema ao cadastrar o usuário!'
+        });
+      });
+    };
+  })
+
+
 
 .controller('DisciplinasCtrl', function($scope, Disciplinas) {
   var all = Disciplinas.all();
@@ -145,12 +174,13 @@ angular.module('starter.controllers', [])
   $scope.filter = $scope.periodos[$scope.periodos.length - 1];
 })
 
-.controller('DisciplinaDetailCtrl', function($scope, $stateParams, Notas) {
-  $scope.chat = Notas.all()[4];
-})
-
-.controller('AccountCtrl', function($scope) {
+.controller('AccountCtrl', function($scope, $state, AuthService) {
   $scope.settings = {
     enableFriends: true
   };
+
+  $scope.logout = function(){
+    AuthService.destroyUserCredentials();
+    $state.go('login', {}, {reload: true});
+  }
 });

@@ -4,16 +4,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   $ionicPlatform.ready(function() {
     if(AuthService.hasToken()){
       $state.go('tab.disciplinas');
-      // $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
-      // AuthService
-      //   .revalidate()
-      //   .then(function(data){})
-      //   .catch(function(data){
-        // });
     }else{
       $state.go('login');
     }
-
   })
 
   $ionicPlatform.registerBackButtonAction(function(event) {
