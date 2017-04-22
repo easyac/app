@@ -126,6 +126,7 @@ angular.module('starter.controllers', [])
       SenacService.create(data)
       .then(function() {
         $ionicLoading.hide();
+        SenacService.login(data);
       }, function() {
         $ionicLoading.hide();
         $ionicPopup.alert({
@@ -134,6 +135,11 @@ angular.module('starter.controllers', [])
         });
       });
     };
+  })
+
+.controller('SyncCtrl',
+  function($scope, SenacService){
+
   })
 
 .controller('DisciplinasCtrl', function($scope, Disciplinas) {

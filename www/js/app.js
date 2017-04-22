@@ -156,6 +156,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
     }
   })
+  .state('tab.account-sync', {
+    url: '/account/sync',
+    views: {
+      'tab-account': {
+        templateUrl: 'templates/tab-sync.html',
+        controller: 'SyncCtrl'
+      }
+    }
+  })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise(function ($injector) {

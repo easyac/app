@@ -125,8 +125,48 @@ angular.module('starter.services', [])
     });
   };
 
+  var login = function(data) {
+   return $q(function(resolve, reject) {
+      $http({
+        method : 'POST',
+        url : API_URL + '/senac/login',
+        data : data
+      }).then(function(res){
+        if(res.status === 200 && res){
+          resolve('User associated.');
+        }else{
+          reject('User associate failed.');
+        }
+      })
+      .catch(function(){
+        reject('err');
+      });
+    });
+  };
+
+  var sync = function(data) {
+   return $q(function(resolve, reject) {
+      $http({
+        method : 'POST',
+        url : API_URL + '/senac/sync',
+        data : data
+      }).then(function(res){
+        if(res.status === 200 && res){
+          resolve('User associated.');
+        }else{
+          reject('User associate failed.');
+        }
+      })
+      .catch(function(){
+        reject('err');
+      });
+    });
+  };
+
   return {
-    create: create
+    create: create,
+    login: login,
+    sync: sync
   }
 
 })
