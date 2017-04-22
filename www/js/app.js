@@ -1,13 +1,13 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 .run(function($ionicPlatform, $ionicPopup, $ionicHistory, $window, $rootScope, $state, AuthService, AUTH_EVENTS) {
-  $ionicPlatform.ready(function() {
-    if(AuthService.hasToken()){
-      $state.go('tab.disciplinas');
-    }else{
-      $state.go('login');
-    }
-  })
+  // $ionicPlatform.ready(function() {
+    // if(AuthService.hasToken()){
+    //   $state.go('tab.disciplinas');
+    // }else{
+    //   $state.go('login');
+    // }
+  // })
 
   $ionicPlatform.registerBackButtonAction(function(event) {
     if ($state.current.name === 'app') {
@@ -144,9 +144,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       'tab-account': {
         templateUrl: 'templates/tab-account.html',
         controller: 'AccountCtrl'
+      },
+    }
+  })
+  .state('tab.account-senac', {
+    url: '/account/senac',
+    views: {
+      'tab-account': {
+        templateUrl: 'templates/tab-senac.html',
+        controller: 'SenacCtrl'
       }
     }
-  });
+  })
 
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise(function ($injector) {

@@ -38,7 +38,7 @@ angular.module('starter.controllers', [])
 
         AuthService.login(data).then(function() {
           $ionicLoading.hide();
-          $state.go('app', {}, {reload: true});
+          $state.go('tab.disciplinas', {}, {reload: true});
         }, function() {
           $ionicLoading.hide();
           $ionicPopup.alert({
@@ -76,36 +76,8 @@ angular.module('starter.controllers', [])
         };
       })
 
-.controller('LoginCtrl',
-  function($scope, $state, $location, AuthService, $ionicPopup, $ionicLoading){
-    $scope.data = {
-      email : '',
-      password : ''
-    };
-
-    $scope.isFilled = function(valid){
-      return valid === true ? 'valid' : '';
-    };
-
-    $scope.login = function(data) {
-      $ionicLoading.show({template: 'Carregando'});
-
-      AuthService.login(data)
-      .then(function() {
-        $ionicLoading.hide();
-        $state.go('tab.disciplinas', {}, {reload: true});
-      }, function() {
-        $ionicLoading.hide();
-        $ionicPopup.alert({
-          title: 'Login Falhou!',
-          template: 'Por favor, verifique os dados informados!'
-        });
-      });
-    };
-  })
-
 .controller('CadastroCtrl',
-  function($scope, $state, $location, AuthService, $ionicPopup, $ionicLoading){
+  function($scope, $state, AuthService, $ionicPopup, $ionicLoading){
     $scope.data = {
       email : '',
       password : ''
@@ -132,24 +104,28 @@ angular.module('starter.controllers', [])
     };
   })
 
-.controller('CadastroCtrl',
-  function($scope, $state, $location, AuthService, $ionicPopup, $ionicLoading){
+.controller('SenacCtrl',
+  function($scope, $state, $location, SenacService, $ionicPopup, $ionicLoading){
     $scope.data = {
-      email : '',
-      password : ''
+      username : '',
+      unity: '',
+      password : '',
+      storePassword: false
     };
 
-    $scope.isFilled = function(valid){
-      return valid === true ? 'valid' : '';
-    };
+    $scope.getUnity = function(data){
+      if(data && data.length > 2){
+        var unity = data.charAt(0) + data.charAt(1);
+        $scope.data.unity = Number.parseInt(unity, 10);
+      }
+    }
 
     $scope.create = function(data) {
       $ionicLoading.show({template: 'Carregando'});
 
-      AuthService.create(data)
+      SenacService.create(data)
       .then(function() {
         $ionicLoading.hide();
-        $state.go('login', {}, {reload: true});
       }, function() {
         $ionicLoading.hide();
         $ionicPopup.alert({
@@ -159,8 +135,6 @@ angular.module('starter.controllers', [])
       });
     };
   })
-
-
 
 .controller('DisciplinasCtrl', function($scope, Disciplinas) {
   var all = Disciplinas.all();

@@ -1,5 +1,40 @@
 <ion-view view-title="Associar Login Portal do Aluno">
   <ion-content>
-    <h2>Oi</h2>
+    <form name="formCreateSenac" class="form_login" ng-submit='create(data)'>
+      <ion-list>
+        <label class="item item-input item-stacked-label {{isFilled(formCreateSenac.username.$valid)}}">
+          <span class="input-label">Usuário</span>
+          <input
+            type="text"
+            placeholder="Ex: 631420378"
+            name="username"
+            ng-model="data.username"
+            ng-change="getUnity(data.username)"
+            maxlength="9"
+            required>
+        </label>
+
+        <label class="item item-input item-stacked-label {{isFilled(formCreateSenac.unity.$valid)}}">
+          <span class="input-label">Unidade</span>
+          <input type="number" placeholder="Ex: 63" name="unity" ng-model="data.unity" required>
+        </label>
+
+
+        <label class="item item-input item-stacked-label {{isFilled(formCreateSenac.password.$valid)}}">
+          <span class="input-label">Senha</span>
+          <input type="password" name="password" placeholder="senha" ng-model="data.password" required>
+        </label>
+
+        <ion-checkbox ng-model="data.storePassword">
+          Salvar senha
+        </ion-checkbox>
+
+        <div class="padding">
+          <button class="button button-block button-energized" type="submit">
+            ASSOCIAR CONTA
+          </button>
+        </div>
+      </ion-list>
+    </form>
   </ion-content>
 </ion-view>

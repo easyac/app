@@ -1,37 +1,49 @@
 <ion-view view-title="Disciplinas">
   <ion-content class="padding">
 
-    <label class="item item-input item-select">
-      <div class="input-label">
-        Filtrar Disciplinas
-      </div>
+    <div ng-hide="hasClasses" class="padding">
+      <p class="text-center">
+        Não foi possível encontrar suas disciplinas.
+        <i class="ion-icon ion-sad-outline"></i>
+        <br><br>
+        <a ui-sref="tab.account-senac">
+          Associe sua conta do Portal do Aluno Senac.
+        </a>
+      </p>
+    </div>
 
-      <select name="ngvalueselect" ng-model="filter">
-        <option ng-repeat="option in periodos" ng-value="option">{{::option}}</option>
-      </select>
-
-    </label>
-
-    <div class="list">
-      <div class="card" ng-repeat="(key, model) in faltas | filter:filter">
-
-        <div class="item item-divider">
-          {{model.descricaoDisciplina}}
-
-          <a href="#/" style="float:right" class="energized">
-            <i class="icon ion-chevron-right icon-accessory"></i>
-          </a>
+    <div ng-show="hasClasses">
+      <label class="item item-input item-select">
+        <div class="input-label">
+          Filtrar Disciplinas
         </div>
 
-        <span class="item">
-          Faltas: {{model.faltas.total}}
-        </span>
-        <span class="item">
-          Conceito: {{model.notas.conceito}}
-        </span>
+        <select name="ngvalueselect" ng-model="filter">
+          <option ng-repeat="option in periodos" ng-value="option">{{::option}}</option>
+        </select>
+      </label>
+
+      <div class="list">
+        <div class="card" ng-repeat="(key, model) in faltas | filter:filter">
+
+          <div class="item item-divider">
+            {{model.descricaoDisciplina}}
+
+            <a href="#/" style="float:right" class="energized">
+              <i class="icon ion-chevron-right icon-accessory"></i>
+            </a>
+          </div>
+
+          <span class="item">
+            Faltas: {{model.faltas.total}}
+          </span>
+          <span class="item">
+            Conceito: {{model.notas.conceito}}
+          </span>
+
+        </div>
 
       </div>
-
     </div>
   </ion-content>
 </ion-view>
