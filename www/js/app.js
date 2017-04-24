@@ -1,13 +1,13 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 .run(function($ionicPlatform, $ionicPopup, $ionicHistory, $window, $rootScope, $state, AuthService, AUTH_EVENTS) {
-  // $ionicPlatform.ready(function() {
-    // if(AuthService.hasToken()){
-    //   $state.go('tab.disciplinas');
-    // }else{
-    //   $state.go('login');
-    // }
-  // })
+  $ionicPlatform.ready(function() {
+    if(AuthService.hasToken()){
+      $state.go('tab.disciplinas');
+    }else{
+      $state.go('login');
+    }
+  })
 
   $ionicPlatform.registerBackButtonAction(function(event) {
     if ($state.current.name === 'app') {
@@ -44,7 +44,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
 
       if (!AuthService.isAuthenticated()) {
-        if (next.name !== 'login') {
+        if (next.name !== 'login' && next.name !== 'cadastro') {
           event.preventDefault();
           $state.go('login');
         }

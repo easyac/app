@@ -1,0 +1,7 @@
+- Save senacCredentials, except password, on localstorage
+
+- If senacCredentials
+  - If storePassword, post sync without body
+  - If not storePassword, prompt senac password
+- else
+  -
