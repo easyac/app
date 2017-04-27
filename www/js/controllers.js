@@ -207,33 +207,44 @@ function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ion
 })
 
 .controller('DisciplinasCtrl', function($scope, $state, Disciplinas, AuthService, $ionicLoading) {
+  var cache = window.localStorage.getItem('classes') || '[]';
+  var data = JSON.parse(cache);
+
   $scope.faltas = [];
   $scope.hasClasses = false;
   $scope.filter = false;
   $scope.periodos = [];
 
-  $ionicLoading.show({template: 'Carregando'});
+  function getPeriodos(data){
+    return data
+      .map(d => d.periodo)
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .sort();
+  }
 
+  function setDataToScope(data){
+    $scope.classes = data;
+    $scope.periodos = getPeriodos(data);
+    $scope.filter = $scope.periodos[$scope.periodos.length - 1];
+  }
 
-  var all = Disciplinas.all()
-    .then(function(data){
-      $scope.classes = data;
-      $scope.periodos = data
-        .map(d => d.periodo)
-        .filter((value, index, self) => self.indexOf(value) === index)
-        .sort();
-      $scope.filter = $scope.periodos[$scope.periodos.length - 1];
-
-      if($scope.classes.length){
-        $scope.hasClasses = true;
-      }
-      $ionicLoading.hide();
-    })
-    .catch(function(){
-      $ionicLoading.hide();
-      AuthService.logout();
-      $state.go('login');
-    })
+  $scope.doRefresh = function(){
+    $ionicLoading.show({template: 'Carregando'});
+    Disciplinas.all()
+      .then(function(data){
+        window.localStorage.setItem('classes', JSON.stringify(data));
+        setDataToScope(data);
+        $scope.hasClasses = ($scope.classes.length > 0);
+        $ionicLoading.hide();
+        $scope.$broadcast('scroll.refreshComplete');
+      })
+      .catch(function(){
+        $ionicLoading.hide();
+        $scope.$broadcast('scroll.refreshComplete');
+        AuthService.logout();
+        $state.go('login');
+      })
+  };
 
   $scope.showConceito = function(conceito) {
     return (

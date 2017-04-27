@@ -1,6 +1,8 @@
 <ion-view view-title="Disciplinas">
   <ion-content class="padding">
 
+    <ion-refresher pulling-text="Puxe para recarregar" on-refresh="doRefresh()"></ion-refresher>
+
     <div ng-hide="hasClasses" class="padding">
       <p class="text-center">
         Não foi possível encontrar suas disciplinas.

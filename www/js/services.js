@@ -198,27 +198,21 @@ angular.module('starter.services', [])
 
   var all = function() {
     return $q(function(resolve, reject) {
-      var cache = window.localStorage.getItem('classes') || '[]';
-      var data = JSON.parse(cache);
-      if (data.length) {
-        resolve(data);
-      }
-      else{
-        $http({
-          method : 'GET',
-          url : API_URL + '/classes',
-        }).then(function(res){
-          if(res.status === 200 && res){
-            window.localStorage.setItem('classes', JSON.stringify(res.data));
-            resolve(res.data);
-          }else{
-            reject(res.status);
-          }
-        })
-        .catch(function(){
-          reject('err');
-        });
-      }
+      $http({
+        method : 'GET',
+        url : API_URL + '/classes',
+      }).then(function(res){
+        if(res.status === 200 && res){
+          window.localStorage.setItem('classes', JSON.stringify(res.data));
+          resolve(res.data);
+        }else{
+          reject(res.status);
+        }
+      })
+      .catch(function(){
+        reject('err');
+      });
+
     });
   };
 
