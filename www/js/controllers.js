@@ -106,12 +106,21 @@ angular.module('starter.controllers', [])
 
 .controller('SenacCtrl',
   function($scope, $state, $location, SenacService, $ionicPopup, $ionicLoading){
-    $scope.data = {
-      username : '',
-      unity: '',
-      password : '',
-      storePassword: false
-    };
+    var senacCredentials = window.localStorage.getItem('senacCredentials');
+    var data = senacCredentials ? JSON.parse(senacCredentials): false;
+
+    if(data){
+      $scope.data = Object.assign({ password: '' }, data);
+    } else {
+      $scope.data = {
+        username : '',
+        unity: '',
+        password : '',
+        storePassword: false
+      };
+    }
+
+
 
     $scope.getUnity = function(data){
       if(data && data.length > 2){
