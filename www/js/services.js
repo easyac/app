@@ -196,11 +196,12 @@ angular.module('starter.services', [])
 
 .factory('Disciplinas', function($q, $http, API_URL) {
 
-  var all = function(data) {
+  var all = function() {
     return $q(function(resolve, reject) {
-      var cache = window.localStorage.getItem('classes');
-      if (cache) {
-        resolve(JSON.parse(cache));
+      var cache = window.localStorage.getItem('classes') || '[]';
+      var data = JSON.parse(cache);
+      if (data.length) {
+        resolve(data);
       }
       else{
         $http({
