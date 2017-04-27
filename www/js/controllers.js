@@ -25,7 +25,7 @@ angular.module('starter.controllers', [])
 .controller('LoginCtrl',
     function($scope, $state, $location, AuthService, $ionicPopup, $ionicLoading){
       $scope.data = {
-        username : '',
+        email : window.localStorage.getItem('user_email') || '',
         password : ''
       };
 
@@ -106,12 +106,21 @@ angular.module('starter.controllers', [])
 
 .controller('SenacCtrl',
   function($scope, $state, $location, SenacService, $ionicPopup, $ionicLoading){
-    $scope.data = {
-      username : '',
-      unity: '',
-      password : '',
-      storePassword: false
-    };
+    var senacCredentials = window.localStorage.getItem('senacCredentials');
+    var data = senacCredentials ? JSON.parse(senacCredentials): false;
+
+    if(data){
+      $scope.data = Object.assign({ password: '' }, data);
+    } else {
+      $scope.data = {
+        username : '',
+        unity: '',
+        password : '',
+        storePassword: false
+      };
+    }
+
+
 
     $scope.getUnity = function(data){
       if(data && data.length > 2){
@@ -126,6 +135,10 @@ angular.module('starter.controllers', [])
       SenacService.create(data)
       .then(function() {
         $ionicLoading.hide();
+        $ionicPopup.alert({
+          template: 'Sua solicitação foi enviada, você será notificado quando o processo terminar!'
+        });
+        SenacService.login(data);
       }, function() {
         $ionicLoading.hide();
         $ionicPopup.alert({
@@ -136,16 +149,95 @@ angular.module('starter.controllers', [])
     };
   })
 
-.controller('DisciplinasCtrl', function($scope, Disciplinas) {
-  var all = Disciplinas.all();
-  $scope.faltas = all;
+.controller('SyncCtrl',
+function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ionicLoading){
+  var senacCredentials = window.localStorage.getItem('senacCredentials');
+  $scope.data = senacCredentials ? JSON.parse(senacCredentials): false;
 
-  $scope.periodos = all
-    .map(d => d.periodo)
-    .filter((value, index, self) => self.indexOf(value) === index)
-    .sort();
+  function positiveAlert(){
+    $ionicPopup.alert({
+      template: 'Solicitação enviada! Você será notificado quando a sincronia dos dados finalizar'
+    });
+  }
 
-  $scope.filter = $scope.periodos[$scope.periodos.length - 1];
+  if ($scope.data === false){
+    var alertPopup = $ionicPopup.alert({
+      template: 'Antes de sincronizar os dados, você precisa associar sua conta do Portal do Aluno'
+    });
+
+    alertPopup.then(function(res) {
+      $state.go('tab.account-senac');
+    });
+  }
+  else if ($scope.data.storePassword) {
+    positiveAlert();
+  } else {
+    var myPopup = $ionicPopup.show({
+      template: '<input type="password" ng-model="data.password">',
+      title: 'Preencha sua senha',
+      subTitle: 'do Portal do Aluno',
+      scope: $scope,
+      buttons: [
+        { text: 'Fechar' },
+        {
+          text: 'Sincronizar',
+          type: 'button-positive',
+          onTap: function(e) {
+            if (!$scope.data.password) {
+              //don't allow the user to close unless he enters wifi password
+              e.preventDefault();
+            } else {
+              return $scope.data.wifi;
+            }
+          }
+        }
+      ]
+    });
+
+    myPopup.then(function() {
+      SenacService
+        .sync($scope.data)
+        .then(function(res) {
+          positiveAlert();
+        });
+    });
+
+  }
+
+})
+
+.controller('DisciplinasCtrl', function($scope, Disciplinas, $ionicLoading) {
+  $scope.faltas = [];
+  $scope.hasClasses = false;
+  $scope.filter = false;
+  $scope.periodos = [];
+
+  $ionicLoading.show({template: 'Carregando'});
+
+
+  var all = Disciplinas.all().then(function(data){
+    $scope.classes = data;
+    $scope.periodos = data
+      .map(d => d.periodo)
+      .filter((value, index, self) => self.indexOf(value) === index)
+      .sort();
+    $scope.filter = $scope.periodos[$scope.periodos.length - 1];
+
+    if($scope.classes.length){
+      $scope.hasClasses = true;
+    }
+
+    $ionicLoading.hide();
+  });
+
+  $scope.showConceito = function(conceito) {
+    return (
+      conceito !== 'SC'
+      && conceito !== '-'
+    );
+  }
+
+
 })
 
 .controller('AccountCtrl', function($scope, $state, AuthService) {

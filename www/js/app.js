@@ -1,13 +1,13 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
 .run(function($ionicPlatform, $ionicPopup, $ionicHistory, $window, $rootScope, $state, AuthService, AUTH_EVENTS) {
-  // $ionicPlatform.ready(function() {
-    // if(AuthService.hasToken()){
-    //   $state.go('tab.disciplinas');
-    // }else{
-    //   $state.go('login');
-    // }
-  // })
+  $ionicPlatform.ready(function() {
+    if(AuthService.hasToken()){
+      $state.go('tab.disciplinas');
+    }else{
+      $state.go('login');
+    }
+  })
 
   $ionicPlatform.registerBackButtonAction(function(event) {
     if ($state.current.name === 'app') {
@@ -44,7 +44,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       }
 
       if (!AuthService.isAuthenticated()) {
-        if (next.name !== 'login') {
+        if (next.name !== 'login' && next.name !== 'cadastro') {
           event.preventDefault();
           $state.go('login');
         }
@@ -55,8 +55,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
-// .constant('API_URL', 'https://api.easyac.xyz')
-.constant('API_URL', 'http://localhost:3000')
+.constant('API_URL', 'https://api.easyac.xyz')
+// .constant('API_URL', 'http://localhost:3000')
 
 .config(function($ionicConfigProvider) {
     $ionicConfigProvider.tabs.position('bottom');
@@ -153,6 +153,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       'tab-account': {
         templateUrl: 'templates/tab-senac.html',
         controller: 'SenacCtrl'
+      }
+    }
+  })
+  .state('tab.account-sync', {
+    url: '/account/sync',
+    views: {
+      'tab-account': {
+        templateUrl: 'templates/tab-sync.html',
+        controller: 'SyncCtrl'
       }
     }
   })

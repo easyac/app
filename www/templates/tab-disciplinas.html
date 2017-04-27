@@ -24,21 +24,27 @@
       </label>
 
       <div class="list">
-        <div class="card" ng-repeat="(key, model) in faltas | filter:filter">
-
+        <div class="card" ng-repeat="(key, model) in classes | filter:filter">
           <div class="item item-divider">
             {{model.descricaoDisciplina}}
 
-            <a href="#/" style="float:right" class="energized">
+            <!-- <a href="#/" style="float:right" class="energized">
               <i class="icon ion-chevron-right icon-accessory"></i>
-            </a>
+            </a> -->
           </div>
 
           <span class="item">
-            Faltas: {{model.faltas.total}}
+            Faltas: {{model.faltas.total || 0}}
+            <span ng-show="model.faltas.aps" class="pull-right">
+              APS: {{model.faltas.aps}}
+            </span>
           </span>
-          <span class="item">
-            Conceito: {{model.notas.conceito}}
+
+          <span class="item" ng-show="showConceito(model.notas.resultado)">
+            {{model.notas.resultado}}
+            <span ng-show="showConceito(model.notas.conceito)" class="pull-right">
+              Conceito: {{model.notas.conceito}}
+            </span>
           </span>
 
         </div>
