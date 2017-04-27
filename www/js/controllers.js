@@ -206,7 +206,7 @@ function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ion
 
 })
 
-.controller('DisciplinasCtrl', function($scope, Disciplinas, $ionicLoading) {
+.controller('DisciplinasCtrl', function($scope, $state, Disciplinas, AuthService, $ionicLoading) {
   $scope.faltas = [];
   $scope.hasClasses = false;
   $scope.filter = false;
@@ -215,20 +215,25 @@ function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ion
   $ionicLoading.show({template: 'Carregando'});
 
 
-  var all = Disciplinas.all().then(function(data){
-    $scope.classes = data;
-    $scope.periodos = data
-      .map(d => d.periodo)
-      .filter((value, index, self) => self.indexOf(value) === index)
-      .sort();
-    $scope.filter = $scope.periodos[$scope.periodos.length - 1];
+  var all = Disciplinas.all()
+    .then(function(data){
+      $scope.classes = data;
+      $scope.periodos = data
+        .map(d => d.periodo)
+        .filter((value, index, self) => self.indexOf(value) === index)
+        .sort();
+      $scope.filter = $scope.periodos[$scope.periodos.length - 1];
 
-    if($scope.classes.length){
-      $scope.hasClasses = true;
-    }
-
-    $ionicLoading.hide();
-  });
+      if($scope.classes.length){
+        $scope.hasClasses = true;
+      }
+      $ionicLoading.hide();
+    })
+    .catch(function(){
+      $ionicLoading.hide();
+      AuthService.logout();
+      $state.go('login');
+    })
 
   $scope.showConceito = function(conceito) {
     return (
@@ -236,8 +241,6 @@ function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ion
       && conceito !== '-'
     );
   }
-
-
 })
 
 .controller('AccountCtrl', function($scope, $state, AuthService) {

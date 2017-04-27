@@ -211,7 +211,7 @@ angular.module('starter.services', [])
             window.localStorage.setItem('classes', JSON.stringify(res.data));
             resolve(res.data);
           }else{
-            reject('User associate failed.');
+            reject(res.status);
           }
         })
         .catch(function(){
