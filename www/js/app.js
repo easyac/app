@@ -1,16 +1,8 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
-.run(function($ionicPlatform, $ionicPopup, $ionicHistory, $window, $rootScope, $state, AuthService, AUTH_EVENTS) {
-  $ionicPlatform.ready(function() {
-    if(AuthService.hasToken()){
-      $state.go('tab.disciplinas');
-    }else{
-      $state.go('login');
-    }
-  })
-
+.run(function($ionicPlatform, $ionicPopup, $ionicHistory, $window, $rootScope, $state, AuthService, AUTH_EVENTS, RequestsService) {
   $ionicPlatform.registerBackButtonAction(function(event) {
-    if ($state.current.name === 'app') {
+    if ($state.current.name === 'tab.disciplinas') {
       $ionicPopup.confirm({
         title: 'Alerta!',
         template: 'Você tem certeza que deseja sair?'
@@ -25,6 +17,36 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   }, 100);
 
   $ionicPlatform.ready(function() {
+
+    if(AuthService.hasToken()){
+      $state.go('tab.disciplinas');
+    }else{
+      $state.go('login');
+    }
+
+    if(window.PushNotification){
+      var push = PushNotification.init({
+        android: {
+            senderID: "148897353740"
+        }
+      });
+
+      window.configurePushNotifications = function(){
+        push.on('registration', function(data) {
+          window.localStorage.setItem('device', data.registrationId);
+        });
+      }
+
+      configurePushNotifications();
+
+      push.on('notification', function(data) {
+        window.localStorage.setItem('notification', JSON.stringify(data));
+        $rootScope.$broadcast("NOVA_IDENTIFICACAO");
+      });
+    }
+
+
+
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
@@ -52,11 +74,19 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         AuthService.loadUserCredentials();
       }
     });
+
+    $rootScope.$on('FIRST_LOGIN', function(event, next, nextParams, fromState) {
+      var device = window.localStorage.getItem('device');
+
+      RequestsService.register(device).then(function(response){
+        console.log('Registered');
+      });
+    });
   });
 })
 
-.constant('API_URL', 'https://api.easyac.xyz')
-// .constant('API_URL', 'http://localhost:3000')
+// .constant('API_URL', 'https://api.easyac.xyz')
+.constant('API_URL', 'http://192.168.0.5:3000')
 
 .config(function($ionicConfigProvider) {
     $ionicConfigProvider.tabs.position('bottom');
@@ -153,6 +183,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       'tab-account': {
         templateUrl: 'templates/tab-senac.html',
         controller: 'SenacCtrl'
+      }
+    }
+  })
+  .state('tab.feedback', {
+    url: '/account/feedback',
+    views: {
+      'tab-account': {
+        templateUrl: 'templates/tab-feedback.html',
+        // controller: 'SenacCtrl'
       }
     }
   })

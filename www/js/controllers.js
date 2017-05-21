@@ -23,7 +23,7 @@ angular.module('starter.controllers', [])
   })
 
 .controller('LoginCtrl',
-    function($scope, $state, $location, AuthService, $ionicPopup, $ionicLoading){
+    function($rootScope, $scope, $state, $location, AuthService, $ionicPopup, $ionicLoading){
       $scope.data = {
         email : window.localStorage.getItem('user_email') || '',
         password : ''
@@ -37,8 +37,9 @@ angular.module('starter.controllers', [])
         $ionicLoading.show({template: 'Carregando'});
 
         AuthService.login(data).then(function() {
-          $ionicLoading.hide();
           $state.go('tab.disciplinas', {}, {reload: true});
+          $rootScope.$broadcast('FIRST_LOGIN');
+          $ionicLoading.hide();
         }, function() {
           $ionicLoading.hide();
           $ionicPopup.alert({
@@ -107,7 +108,9 @@ angular.module('starter.controllers', [])
 .controller('SenacCtrl',
   function($scope, $state, $location, SenacService, $ionicPopup, $ionicLoading){
     var senacCredentials = window.localStorage.getItem('senacCredentials');
+    var isSyncing = window.localStorage.getItem('isSyncing');
     var data = senacCredentials ? JSON.parse(senacCredentials): false;
+    $scope.isSyncing = isSyncing === 'true';
 
     if(data){
       $scope.data = Object.assign({ password: '' }, data);
@@ -120,6 +123,9 @@ angular.module('starter.controllers', [])
       };
     }
 
+    $scope.isFilled = function(valid){
+      return valid === true ? 'valid' : 'invalid';
+    };
 
 
     $scope.getUnity = function(data){
@@ -131,14 +137,20 @@ angular.module('starter.controllers', [])
 
     $scope.create = function(data) {
       $ionicLoading.show({template: 'Carregando'});
-
       SenacService.create(data)
       .then(function() {
         $ionicLoading.hide();
-        $ionicPopup.alert({
-          template: 'Sua solicitação foi enviada, você será notificado quando o processo terminar!'
-        });
+        window.localStorage.setItem('isSyncing', true);
         SenacService.login(data);
+
+        var alertPopup = $ionicPopup.alert({
+          template: 'Sua solicitação foi enviada, você será notificado quando o processo terminar!'
+        })
+
+        alertPopup.then(function(res) {
+          $state.go('tab.account');
+        });
+
       }, function() {
         $ionicLoading.hide();
         $ionicPopup.alert({
@@ -152,56 +164,63 @@ angular.module('starter.controllers', [])
 .controller('SyncCtrl',
 function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ionicLoading){
   var senacCredentials = window.localStorage.getItem('senacCredentials');
+  var isSyncing = window.localStorage.getItem('isSyncing');
+
   $scope.data = senacCredentials ? JSON.parse(senacCredentials): false;
+  $scope.isSyncing = isSyncing === 'true';
 
   function positiveAlert(){
+    $scope.isSyncing = true;
+    window.localStorage.setItem('isSyncing', true);
     $ionicPopup.alert({
       template: 'Solicitação enviada! Você será notificado quando a sincronia dos dados finalizar'
     });
   }
 
-  if ($scope.data === false){
-    var alertPopup = $ionicPopup.alert({
-      template: 'Antes de sincronizar os dados, você precisa associar sua conta do Portal do Aluno'
-    });
+  if(!isSyncing){
+    if ($scope.data === false){
+      var alertPopup = $ionicPopup.alert({
+        template: 'Antes de sincronizar os dados, você precisa associar sua conta do Portal do Aluno'
+      });
 
-    alertPopup.then(function(res) {
-      $state.go('tab.account-senac');
-    });
-  }
-  else if ($scope.data.storePassword) {
-    positiveAlert();
-  } else {
-    var myPopup = $ionicPopup.show({
-      template: '<input type="password" ng-model="data.password">',
-      title: 'Preencha sua senha',
-      subTitle: 'do Portal do Aluno',
-      scope: $scope,
-      buttons: [
-        { text: 'Fechar' },
-        {
-          text: 'Sincronizar',
-          type: 'button-positive',
-          onTap: function(e) {
-            if (!$scope.data.password) {
-              //don't allow the user to close unless he enters wifi password
-              e.preventDefault();
-            } else {
-              return $scope.data.wifi;
+      alertPopup.then(function(res) {
+        $state.go('tab.account-senac');
+      });
+    }
+    else if ($scope.data.storePassword) {
+      positiveAlert();
+    }
+    else {
+      var myPopup = $ionicPopup.show({
+        template: '<input type="password" ng-model="data.password">',
+        title: 'Preencha sua senha',
+        subTitle: 'do Portal do Aluno',
+        scope: $scope,
+        buttons: [
+          { text: 'Fechar' },
+          {
+            text: 'Sincronizar',
+            type: 'button-positive',
+            onTap: function(e) {
+              if (!$scope.data.password) {
+                e.preventDefault();
+              } else {
+                return $scope.data.wifi;
+              }
             }
           }
-        }
-      ]
-    });
+        ]
+      });
 
-    myPopup.then(function() {
-      SenacService
-        .sync($scope.data)
-        .then(function(res) {
-          positiveAlert();
-        });
-    });
+      myPopup.then(function() {
+        SenacService
+          .sync($scope.data)
+          .then(function(res) {
+            positiveAlert();
+          });
+      });
 
+    }
   }
 
 })
@@ -210,10 +229,15 @@ function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ion
   var cache = window.localStorage.getItem('classes') || '[]';
   var data = JSON.parse(cache);
 
-  $scope.faltas = [];
   $scope.hasClasses = false;
   $scope.filter = false;
   $scope.periodos = [];
+
+  if(data.length){
+    setDataToScope(data);
+    $scope.hasClasses = ($scope.classes.length > 0);
+  }
+
 
   function getPeriodos(data){
     return data

@@ -1,5 +1,9 @@
 <ion-view view-title="Associar Login Portal do Aluno">
   <ion-content>
+    <div ng-show="isSyncing" class="alert-bar positive-bg">
+      Login em andamento.
+    </div>
+
     <form name="formCreateSenac" class="form_login" ng-submit='create(data)'>
       <ion-list>
         <label class="item item-input item-stacked-label {{isFilled(formCreateSenac.username.$valid)}}">
@@ -21,8 +25,11 @@
 
 
         <label class="item item-input item-stacked-label {{isFilled(formCreateSenac.password.$valid)}}">
-          <span class="input-label">Senha</span>
+          <span class="input-label">
+            Senha
+          </span>
           <input type="password" name="password" placeholder="senha" ng-model="data.password" required>
+          <span class="help assertive" ng-show="formCreateSenac.password.$invalid">campo obrigatório</span>
         </label>
 
         <ion-checkbox ng-model="data.storePassword">
@@ -30,7 +37,9 @@
         </ion-checkbox>
 
         <div class="padding">
-          <button class="button button-block button-energized" type="submit">
+          <button
+            ng-disabled="isSyncing || formCreateSenac.$invalid"
+            class="button button-block button-energized" type="submit">
             ASSOCIAR CONTA
           </button>
         </div>

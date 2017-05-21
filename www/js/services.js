@@ -1,4 +1,4 @@
-angular.module('starter.services', [])
+angular.module('starter.services', ['ionic'])
 
 
 .service('AuthService', function($q, $http, USER_ROLES, API_URL) {
@@ -218,5 +218,32 @@ angular.module('starter.services', [])
 
   return {
     all: all
+  };
+})
+
+.service('RequestsService', function($ionicPlatform, $http, $q, API_URL){
+
+  function register(device_token){
+    var currentPlatform = ionic.Platform.platform();
+    var deferred = $q.defer();
+    var data = {
+      'token': device_token,
+      'platform': currentPlatform
+    };
+
+    $http.post(API_URL + '/device/register', data)
+      .success(function(response){
+        console.log(response);
+        deferred.resolve(response);
+      })
+      .error(function(data){
+        console.log(data);
+        deferred.reject();
+      });
+    return deferred.promise;
+  }
+
+  return {
+    register: register
   };
 })
