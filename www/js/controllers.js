@@ -106,7 +106,7 @@ angular.module('starter.controllers', [])
   })
 
 .controller('SenacCtrl',
-  function($scope, $state, $location, SenacService, $ionicPopup, $ionicLoading){
+  function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ionicLoading){
     var senacCredentials = window.localStorage.getItem('senacCredentials');
     var isSyncing = window.localStorage.getItem('isSyncing');
     var data = senacCredentials ? JSON.parse(senacCredentials): false;
@@ -126,7 +126,6 @@ angular.module('starter.controllers', [])
     $scope.isFilled = function(valid){
       return valid === true ? 'valid' : 'invalid';
     };
-
 
     $scope.getUnity = function(data){
       if(data && data.length > 2){
@@ -148,6 +147,7 @@ angular.module('starter.controllers', [])
         })
 
         alertPopup.then(function(res) {
+          pingIsSync();
           $state.go('tab.account');
         });
 
@@ -159,25 +159,52 @@ angular.module('starter.controllers', [])
         });
       });
     };
+
+    function pingIsSync(){
+      var intervalId = setInterval(function(){
+        AuthService
+          .get()
+          .then(function(data){
+            if(data.senacCredentials && !data.senacCredentials.isSyncing){
+              window.localStorage.setItem('isSyncing', data.senacCredentials.isSyncing);
+              clearInterval(intervalId);
+            }
+          });
+      }, 10000);
+    }
   })
 
 .controller('SyncCtrl',
-function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ionicLoading){
+  function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ionicLoading){
   var senacCredentials = window.localStorage.getItem('senacCredentials');
   var isSyncing = window.localStorage.getItem('isSyncing');
 
   $scope.data = senacCredentials ? JSON.parse(senacCredentials): false;
   $scope.isSyncing = isSyncing === 'true';
 
+  function pingIsSync(){
+    var intervalId = setInterval(function(){
+      AuthService
+        .get()
+        .then(function(data){
+          if(data.senacCredentials && !data.senacCredentials.isSyncing){
+            window.localStorage.setItem('isSyncing', data.senacCredentials.isSyncing);
+            clearInterval(intervalId);
+          }
+        });
+    }, 10000);
+  }
+
   function positiveAlert(){
     $scope.isSyncing = true;
     window.localStorage.setItem('isSyncing', true);
+    pingIsSync();
     $ionicPopup.alert({
       template: 'Solicitação enviada! Você será notificado quando a sincronia dos dados finalizar'
     });
   }
 
-  if(!isSyncing){
+  if(!$scope.isSyncing){
     if ($scope.data === false){
       var alertPopup = $ionicPopup.alert({
         template: 'Antes de sincronizar os dados, você precisa associar sua conta do Portal do Aluno'
@@ -225,13 +252,15 @@ function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ion
 
 })
 
-.controller('DisciplinasCtrl', function($scope, $state, Disciplinas, AuthService, $ionicLoading) {
+.controller('DisciplinasCtrl',
+  function($rootScope, $scope, $state, Disciplinas, AuthService, $ionicLoading) {
   var cache = window.localStorage.getItem('classes') || '[]';
   var data = JSON.parse(cache);
 
   $scope.hasClasses = false;
   $scope.filter = false;
   $scope.periodos = [];
+  $rootScope.$on('refreshData', $scope.doRefresh);
 
   if(data.length){
     setDataToScope(data);
@@ -278,7 +307,8 @@ function($scope, $state, $location, SenacService, AuthService, $ionicPopup, $ion
   }
 })
 
-.controller('AccountCtrl', function($scope, $state, AuthService) {
+.controller('AccountCtrl',
+  function($scope, $state, AuthService) {
   $scope.settings = {
     enableFriends: true
   };

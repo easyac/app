@@ -20,7 +20,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
     if(AuthService.hasToken()){
       $state.go('tab.disciplinas');
-    }else{
+    }
+    else {
       $state.go('login');
     }
 
@@ -41,16 +42,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
       push.on('notification', function(data) {
         window.localStorage.setItem('notification', JSON.stringify(data));
-        $rootScope.$broadcast("NOVA_IDENTIFICACAO");
+        $rootScope.$broadcast("NOTIFICATION", data);
       });
     }
-
-
 
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
       cordova.plugins.Keyboard.disableScroll(true);
     }
+
     if (window.StatusBar) {
       StatusBar.styleDefault();
     }
@@ -81,6 +81,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
       RequestsService.register(device).then(function(response){
         console.log('Registered');
       });
+    });
+
+    $rootScope.$on('NOTIFICATION', function(event, args) {
+      console.log(args);
+      if (args.additionalData.type === 'popup') {
+        $ionicPopup.alert({
+          title: args.title,
+          template: args.message
+        });
+      }
+
+      window.localStorage.setItem('isSyncing', args.isSyncing || false);
     });
   });
 })
