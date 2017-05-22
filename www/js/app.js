@@ -97,8 +97,8 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
   });
 })
 
-// .constant('API_URL', 'https://api.easyac.xyz')
-.constant('API_URL', 'http://192.168.0.5:3000')
+.constant('API_URL', 'https://api.easyac.xyz')
+// .constant('API_URL', 'http://192.168.0.5:3000')
 
 .config(function($ionicConfigProvider) {
     $ionicConfigProvider.tabs.position('bottom');
