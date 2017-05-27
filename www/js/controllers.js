@@ -215,7 +215,11 @@ angular.module('starter.controllers', [])
       });
     }
     else if ($scope.data.storePassword) {
-      positiveAlert();
+      SenacService
+        .sync($scope.data)
+        .then(function(res) {
+          positiveAlert();
+        });
     }
     else {
       var myPopup = $ionicPopup.show({

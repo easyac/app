@@ -137,7 +137,6 @@ angular.module('starter.services', ['ionic'])
       }).then(function(res){
         if(res.status === 200 && res){
           var credentials = Object.assign({}, data);
-          delete credentials.password;
           window.localStorage.setItem('senacCredentials', JSON.stringify(credentials))
           resolve('User associated.');
         }else{
