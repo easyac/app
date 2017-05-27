@@ -5,3 +5,6 @@ run-android:
 
 run-browser:
 	ionic serve -l
+
+build:
+	./scripts.sh
