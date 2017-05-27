@@ -7,4 +7,4 @@ run-browser:
 	ionic serve -l
 
 build:
-	./scripts.sh
+	exec ./scripts/build.sh

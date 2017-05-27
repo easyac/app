@@ -36,6 +36,8 @@ angular.module('starter.services', ['ionic'])
     isAuthenticated = false;
     $http.defaults.headers.Authorization = undefined;
     window.localStorage.removeItem(LOCAL_TOKEN_KEY);
+    window.localStorage.removeItem('isSyncing');
+    window.localStorage.removeItem('senacCredentials');
   }
 
   var login = function(data) {
